@@ -1,0 +1,37 @@
+{
+  "media": {
+    "@ref": "netflix_master.mov",
+    "track": [
+      {
+        "@type": "General",
+        "Format": "MPEG-4",
+        "Format_Profile": "QuickTime",
+        "FileExtension": "mov",
+        "Duration": "120.520",
+        "FileSize": "9216000000"
+      },
+      {
+        "@type": "Video",
+        "Format": "ProRes",
+        "Format_Profile": "422 HQ",
+        "CodecID": "apch",
+        "Width": "1920",
+        "Height": "1080",
+        "FrameRate": "23.976",
+        "ScanType": "Progressive",
+        "BitDepth": "10",
+        "ColorSpace": "YUV",
+        "ChromaSubsampling": "4:2:2"
+      },
+      {
+        "@type": "Audio",
+        "Format": "PCM",
+        "CodecID": "in24",
+        "Channels": "2",
+        "SamplingRate": "48000",
+        "BitDepth": "24",
+        "Language": "en"
+      }
+    ]
+  }
+}

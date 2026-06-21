@@ -1,0 +1,39 @@
+{
+  "streams": [
+    {
+      "index": 0,
+      "codec_name": "mpeg2video",
+      "codec_long_name": "MPEG-2 video",
+      "profile": "4:2:2",
+      "codec_type": "video",
+      "width": 1920,
+      "height": 1080,
+      "pix_fmt": "yuv422p",
+      "field_order": "tt",
+      "r_frame_rate": "25/1",
+      "avg_frame_rate": "25/1",
+      "bits_per_raw_sample": "8",
+      "color_primaries": "bt709"
+    },
+    {
+      "index": 1,
+      "codec_name": "pcm_s24le",
+      "codec_long_name": "PCM signed 24-bit little-endian",
+      "codec_type": "audio",
+      "sample_rate": "48000",
+      "channels": 2,
+      "bits_per_sample": 24,
+      "tags": {
+        "language": "eng"
+      }
+    }
+  ],
+  "format": {
+    "filename": "broadcast_master.mxf",
+    "nb_streams": 2,
+    "format_name": "mxf",
+    "format_long_name": "MXF (Material eXchange Format)",
+    "duration": "120.480000",
+    "size": "780000000"
+  }
+}

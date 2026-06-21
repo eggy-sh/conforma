@@ -1,0 +1,39 @@
+{
+  "streams": [
+    {
+      "index": 0,
+      "codec_name": "prores",
+      "codec_long_name": "Apple ProRes (iCodec Pro)",
+      "profile": "HQ",
+      "codec_type": "video",
+      "width": 1920,
+      "height": 1080,
+      "pix_fmt": "yuv422p10le",
+      "field_order": "progressive",
+      "r_frame_rate": "24000/1001",
+      "avg_frame_rate": "24000/1001",
+      "bits_per_raw_sample": "10",
+      "color_primaries": "bt709"
+    },
+    {
+      "index": 1,
+      "codec_name": "pcm_s24le",
+      "codec_long_name": "PCM signed 24-bit little-endian",
+      "codec_type": "audio",
+      "sample_rate": "48000",
+      "channels": 2,
+      "bits_per_sample": 24,
+      "tags": {
+        "language": "eng"
+      }
+    }
+  ],
+  "format": {
+    "filename": "netflix_master.mov",
+    "nb_streams": 2,
+    "format_name": "mov,mp4,m4a,3gp,3g2,mj2",
+    "format_long_name": "QuickTime / MOV",
+    "duration": "120.520000",
+    "size": "9216000000"
+  }
+}

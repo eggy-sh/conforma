@@ -1,0 +1,71 @@
+name: CI
+
+# Lint + hermetic test suite for conforma. Everything here is offline: the suite
+# never touches ffmpeg, ffprobe, a real LLM, or the network (replykit's MockModel
+# / ScriptedModel stand in for any model). The only network access is dependency
+# installation.
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+
+# Cancel superseded runs on the same ref so a busy PR doesn't queue stale jobs.
+concurrency:
+  group: ci-${{ github.ref }}
+  cancel-in-progress: true
+
+permissions:
+  contents: read
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    strategy:
+      fail-fast: false
+      matrix:
+        python-version: ["3.11", "3.12"]
+    steps:
+      - name: Check out conforma
+        uses: actions/checkout@v4
+
+      # conforma depends on replykit, which is not yet published to PyPI. Pull the
+      # sibling repo from the eggy-sh org and install it editable so the same
+      # public contract the tests exercise locally is exercised in CI too.
+      - name: Check out replykit (runtime dependency)
+        uses: actions/checkout@v4
+        with:
+          repository: eggy-sh/replykit
+          path: .replykit
+          # Don't fail the whole job if the repo isn't reachable; the next step
+          # reports a clear message instead of a cryptic resolver error.
+          fetch-depth: 1
+        continue-on-error: true
+
+      - name: Install uv
+        uses: astral-sh/setup-uv@v5
+        with:
+          enable-cache: true
+
+      - name: Set up Python ${{ matrix.python-version }}
+        run: uv python install ${{ matrix.python-version }}
+
+      - name: Create venv and install conforma + replykit
+        run: |
+          uv venv --python ${{ matrix.python-version }}
+          if [ -f .replykit/pyproject.toml ]; then
+            echo "Installing replykit from the checked-out sibling repo."
+            uv pip install -e .replykit
+          else
+            echo "::warning::replykit checkout unavailable; relying on the package index."
+          fi
+          uv pip install -e '.[dev]'
+
+      - name: Ruff lint
+        run: uv run ruff check .
+
+      - name: Ruff format check
+        run: uv run ruff format --check .
+
+      - name: Pytest with coverage
+        run: uv run pytest --cov=conforma --cov-report=term-missing

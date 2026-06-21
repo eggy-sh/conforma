@@ -1,0 +1,38 @@
+{
+  "streams": [
+    {
+      "index": 0,
+      "codec_name": "h264",
+      "codec_long_name": "H.264 / AVC / MPEG-4 AVC / MPEG-4 part 10",
+      "profile": "High",
+      "codec_type": "video",
+      "width": 1280,
+      "height": 720,
+      "pix_fmt": "yuv420p",
+      "field_order": "progressive",
+      "r_frame_rate": "30000/1001",
+      "avg_frame_rate": "30000/1001",
+      "bits_per_raw_sample": "8",
+      "color_primaries": "bt709"
+    },
+    {
+      "index": 1,
+      "codec_name": "aac",
+      "codec_long_name": "AAC (Advanced Audio Coding)",
+      "codec_type": "audio",
+      "sample_rate": "44100",
+      "channels": 2,
+      "tags": {
+        "language": "eng"
+      }
+    }
+  ],
+  "format": {
+    "filename": "web_proxy.mp4",
+    "nb_streams": 2,
+    "format_name": "mov,mp4,m4a,3gp,3g2,mj2",
+    "format_long_name": "QuickTime / MOV",
+    "duration": "120.500000",
+    "size": "120000000"
+  }
+}

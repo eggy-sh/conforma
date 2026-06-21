@@ -1,0 +1,40 @@
+# EBU/broadcast-style HD delivery spec (approximation, not an official document).
+# Models a typical European broadcast HD master: 1080i/25 (interlaced), XDCAM HD422
+# (MPEG-2) at 50 Mbps in an MXF wrapper, with 48 kHz / 24-bit PCM audio. Values are
+# illustrative for the conforma demo/test suite and are loosely inspired by EBU
+# R 123 / AMWA AS-11-style delivery families, not a verbatim reproduction.
+name: "EBU Broadcast HD MXF (approx.)"
+version: "1.0"
+description: >
+  Approximation of a European broadcast HD master: 1080i25, XDCAM HD422
+  (MPEG-2 4:2:2), 8-bit, in an MXF wrapper with 48 kHz 24-bit PCM audio.
+  Illustrative only; inspired by EBU/AS-11-style families.
+requirements:
+  - key: container
+    expected: mxf
+    description: "MXF wrapper"
+  - key: resolution
+    expected: [1920, 1080]
+    description: "1920x1080 HD"
+  - key: frame_rate
+    expected: 25.0
+    tolerance: 0.01
+    description: "25 fps"
+  - key: scan_type
+    expected: interlaced
+    description: "Interlaced (1080i)"
+  - key: video_codec
+    expected: [mpeg2video, xdcam]
+    description: "XDCAM HD422 (MPEG-2 4:2:2)"
+  - key: bit_depth
+    expected: 8
+    description: "8-bit video"
+  - key: audio_codec
+    expected: pcm
+    description: "Uncompressed PCM audio"
+  - key: audio_channels
+    expected: 2
+    description: "2.0 per pair (4 mono tracks typical)"
+  - key: audio_sample_rate
+    expected: 48000
+    description: "48 kHz audio"

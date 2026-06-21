@@ -1,0 +1,49 @@
+# Example of a *custom* delivery spec authored by a studio's media-ops team.
+#
+# Pass it to the CLI with `--spec` pointing at this file instead of a shipped
+# preset name:
+#
+#     conforma check master.mov --spec examples/netflix-custom.yaml
+#
+# This is intentionally a near-twin of the built-in `netflix-hd` preset but with
+# one deliberately stricter line: it pins 25 fps (PAL territory) instead of
+# 23.976. Run it against examples/probe_netflix_pass.json (a 23.976 master) and
+# you'll see exactly one FAIL on `frame_rate` with a ready-to-run ffmpeg fix —
+# a compact demonstration that verdicts are spec-relative, not hard-coded.
+#
+# Every `key` below must be a rule conforma implements; an unknown key is a spec
+# authoring error (SpecError), never a silent pass.
+name: "ACME Studios HD Mezzanine (custom)"
+version: "2025.1"
+description: >
+  In-house HD ProRes mezzanine, PAL cadence: 1080p ProRes 422 HQ, 25 fps
+  progressive, 10-bit, in a QuickTime (.mov) wrapper with 48 kHz PCM audio.
+requirements:
+  - key: container
+    expected: mov
+    description: "QuickTime (.mov) wrapper"
+  - key: resolution
+    expected: [1920, 1080]
+    description: "1920x1080 (Full HD)"
+  - key: frame_rate
+    expected: 25.0
+    tolerance: 0.01
+    description: "25 fps (PAL cadence)"
+  - key: scan_type
+    expected: progressive
+    description: "Progressive scan"
+  - key: video_codec
+    expected: prores
+    description: "Apple ProRes (422 HQ family)"
+  - key: bit_depth
+    expected: 10
+    description: "10-bit video"
+  - key: audio_codec
+    expected: pcm
+    description: "Uncompressed PCM audio"
+  - key: audio_channels
+    expected: 2
+    description: "2.0 stereo"
+  - key: audio_sample_rate
+    expected: 48000
+    description: "48 kHz audio"
