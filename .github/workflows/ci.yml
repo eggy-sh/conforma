@@ -52,7 +52,7 @@ jobs:
       - name: Create venv and install conforma + replykit
         run: |
           uv venv --python ${{ matrix.python-version }}
-          uv pip install 'replykit @ git+https://github.com/edgarh92/replykit@main'
+          uv pip install 'replykit @ git+https://github.com/eggy-sh/replykit@main'
           uv pip install -e '.[dev]'
 
       - name: Ruff lint

@@ -76,10 +76,10 @@ the sibling repo (`/Users/ehernand/personal_projects/postpro-kit/replykit`):
   "[0.1.0] - unreleased" text is gone.
 - **CI replykit install made resolvable.** Because replykit is not yet on PyPI,
   `.github/workflows/ci.yml` now installs it from git
-  (`replykit @ git+https://github.com/edgarh92/replykit@main`) before installing
-  conforma, so CI is green once both repos are pushed to `edgarh92`. The previous
+  (`replykit @ git+https://github.com/eggy-sh/replykit@main`) before installing
+  conforma, so CI is green once both repos are pushed to `eggy-sh`. The previous
   non-resolvable sibling-checkout path is removed; local/dev still uses the
-  editable sibling install. CHANGELOG/README replykit links point at `edgarh92`.
+  editable sibling install. CHANGELOG/README replykit links point at `eggy-sh`.
 - **`acceptance/test_acceptance.py` reformatted** so the repo-wide
   `ruff format --check .` gate (which CI runs over the whole tree) is clean.
   Whitespace/line-wrapping only — no assertion, command, or success criterion

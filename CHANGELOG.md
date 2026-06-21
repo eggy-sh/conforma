@@ -9,7 +9,7 @@ adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 ## [0.1.0] - 2026-06-20
 
 First public release of `conforma` — a delivery-spec compliance agent for
-post-production media, built on [replykit](https://github.com/edgarh92/replykit).
+post-production media, built on [replykit](https://github.com/eggy-sh/replykit).
 The verdict is always computed by deterministic, total rule functions; the
 optional replykit model layer may only narrate the result or fill a genuinely
 ambiguous audio-track role — it can never fabricate or override a verdict.
@@ -69,5 +69,5 @@ ambiguous audio-track role — it can never fabricate or override a verdict.
   real ffmpeg/ffprobe/NLE/network) plus a CI pipeline running `ruff` and
   `pytest` on Python 3.11 and 3.12.
 
-[Unreleased]: https://github.com/edgarh92/conforma/compare/v0.1.0...HEAD
-[0.1.0]: https://github.com/edgarh92/conforma/releases/tag/v0.1.0
+[Unreleased]: https://github.com/eggy-sh/conforma/compare/v0.1.0...HEAD
+[0.1.0]: https://github.com/eggy-sh/conforma/releases/tag/v0.1.0
