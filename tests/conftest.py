@@ -9,10 +9,16 @@ tests) and SWE-CLI (integration tests) build on these fixtures.
 from __future__ import annotations
 
 import json
+import os
 from pathlib import Path
 from typing import Any
 
 import pytest
+
+# Pin a wide terminal width so Rich-rendered CLI "--help" output is never
+# wrapped/truncated under CI's narrow non-TTY width (which hides option flags
+# from the help tests). Set at import time, before any CLI is imported/invoked.
+os.environ["COLUMNS"] = "200"
 
 #: Directory holding committed probe JSON fixtures.
 FIXTURES_DIR = Path(__file__).parent / "fixtures"
