@@ -6,6 +6,10 @@ name: CI
 # *.otio/*.fcpxml timelines stand in for any media). The only network access is
 # dependency installation. The dev extra pulls the optional OpenTimelineIO
 # FCPXML/AAF adapters so the sequence-conformance .fcpxml interop path is covered.
+#
+# conforma depends on replykit, which is not yet published to PyPI. CI installs it
+# straight from git (the main branch of the sibling repo); local/dev uses an
+# editable install of the sibling checkout instead. Keep these in sync.
 
 on:
   push:
@@ -31,19 +35,6 @@ jobs:
       - name: Check out conforma
         uses: actions/checkout@v4
 
-      # conforma depends on replykit, which is not yet published to PyPI. Pull the
-      # sibling repo from the eggy-sh org and install it editable so the same
-      # public contract the tests exercise locally is exercised in CI too.
-      - name: Check out replykit (runtime dependency)
-        uses: actions/checkout@v4
-        with:
-          repository: eggy-sh/replykit
-          path: .replykit
-          # Don't fail the whole job if the repo isn't reachable; the next step
-          # reports a clear message instead of a cryptic resolver error.
-          fetch-depth: 1
-        continue-on-error: true
-
       - name: Install uv
         uses: astral-sh/setup-uv@v5
         with:
@@ -52,15 +43,16 @@ jobs:
       - name: Set up Python ${{ matrix.python-version }}
         run: uv python install ${{ matrix.python-version }}
 
+      # conforma depends on replykit, which is not yet published to PyPI. Install it
+      # straight from the sibling repo's main branch on GitHub so CI exercises the
+      # same public contract the tests rely on locally (where replykit is an editable
+      # sibling install). Install replykit first so the conforma install below
+      # resolves the `replykit>=0.1.0` dependency against this build, not a
+      # (non-existent) package-index release.
       - name: Create venv and install conforma + replykit
         run: |
           uv venv --python ${{ matrix.python-version }}
-          if [ -f .replykit/pyproject.toml ]; then
-            echo "Installing replykit from the checked-out sibling repo."
-            uv pip install -e .replykit
-          else
-            echo "::warning::replykit checkout unavailable; relying on the package index."
-          fi
+          uv pip install 'replykit @ git+https://github.com/edgarh92/replykit@main'
           uv pip install -e '.[dev]'
 
       - name: Ruff lint
