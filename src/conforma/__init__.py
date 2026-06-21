@@ -59,6 +59,62 @@ from .rules import (
     check_all,
     check_requirement,
 )
+from .sequence.agent import (
+    SequenceConformanceAgent,
+    build_sequence_registry,
+    explain_sequence_report,
+    infer_ambiguous_roles,
+)
+from .sequence.delivery_spec import (
+    SEQ_PRESETS,
+    DeliverySpec,
+    list_seq_presets,
+    load_delivery_spec,
+    load_seq_preset,
+    parse_delivery_spec,
+)
+from .sequence.errors import (
+    SequenceError,
+    SequenceSpecError,
+)
+from .sequence.extract import (
+    ROLE_KEYWORDS,
+    extract_layout,
+    find_slate,
+    infer_role_deterministic,
+)
+from .sequence.fix import (
+    apply_fixes,
+    fix_sequence,
+)
+from .sequence.models import (
+    ClipInfo,
+    SeqCheckStatus,
+    SeqRuleResult,
+    SequenceLayout,
+    SequenceReport,
+    TrackInfo,
+)
+from .sequence.otio_io import (
+    SUFFIX_ADAPTERS,
+    adapter_available,
+    available_adapters,
+    read_timeline,
+    write_timeline,
+)
+from .sequence.report import (
+    render_sequence_report,
+    render_sequence_report_markdown,
+    sequence_report_to_dict,
+)
+from .sequence.rules import (
+    SEQ_RULES,
+    check_all_sequence,
+    check_audio_track_count,
+    check_reference_audio_muted,
+    check_slate_duration,
+    check_video_track_count,
+)
 from .spec import (
     PRESETS,
     list_presets,
@@ -111,4 +167,52 @@ __all__ = [
     "render_report",
     "render_report_markdown",
     "report_to_dict",
+    # --- sequence conformance (conform_validator) ---
+    # errors
+    "SequenceError",
+    "SequenceSpecError",
+    # models
+    "ClipInfo",
+    "TrackInfo",
+    "SequenceLayout",
+    "SeqCheckStatus",
+    "SeqRuleResult",
+    "SequenceReport",
+    # otio_io
+    "read_timeline",
+    "write_timeline",
+    "adapter_available",
+    "available_adapters",
+    "SUFFIX_ADAPTERS",
+    # extract
+    "extract_layout",
+    "infer_role_deterministic",
+    "find_slate",
+    "ROLE_KEYWORDS",
+    # delivery spec
+    "DeliverySpec",
+    "parse_delivery_spec",
+    "load_delivery_spec",
+    "load_seq_preset",
+    "list_seq_presets",
+    "SEQ_PRESETS",
+    # rules
+    "check_all_sequence",
+    "check_slate_duration",
+    "check_reference_audio_muted",
+    "check_video_track_count",
+    "check_audio_track_count",
+    "SEQ_RULES",
+    # report
+    "sequence_report_to_dict",
+    "render_sequence_report",
+    "render_sequence_report_markdown",
+    # fix
+    "apply_fixes",
+    "fix_sequence",
+    # agent
+    "SequenceConformanceAgent",
+    "build_sequence_registry",
+    "explain_sequence_report",
+    "infer_ambiguous_roles",
 ]

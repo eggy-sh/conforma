@@ -1,0 +1,38 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE fcpxml>
+
+<fcpxml version="1.8">
+    <resources>
+        <format id="r1" frameDuration="25/600s" name=""/>
+        <asset name="SLATE" src="file:///media/SLATE.mov" format="r1" id="r2" duration="8/1s" start="0s" hasAudio="0" hasVideo="1"/>
+        <asset name="SHOT_0010" src="file:///media/SHOT_0010.mov" format="r1" id="r3" duration="40/1s" start="0s" hasAudio="0" hasVideo="1"/>
+        <asset name="ref_2pop" src="file:///media/ref_2pop.wav" format="r1" id="r4" duration="48/1s" start="0s" hasAudio="1" hasVideo="0"/>
+        <asset name="dx_stem" src="file:///media/dx_stem.wav" format="r1" id="r5" duration="40/1s" start="0s" hasAudio="1" hasVideo="0"/>
+    </resources>
+    <asset-clip name="SLATE" format="r1" ref="r2" duration="8/1s"/>
+    <asset-clip name="SHOT_0010" format="r1" ref="r3" duration="40/1s"/>
+    <asset-clip name="ref_2pop" format="r1" ref="r4" duration="48/1s"/>
+    <asset-clip name="dx_stem" format="r1" ref="r5" duration="40/1s"/>
+    <project name="Seq Netflix Fail" uid="">
+        <sequence duration="12/1s" format="r1">
+            <spine>
+                <clip name="SLATE" offset="0s" duration="2/1s">
+                    <video offset="0s" ref="r2" duration="8/1s"/>
+                    <clip name="ref_2pop" offset="0s" duration="12/1s" lane="-1">
+                        <gap name="Gap" offset="0s" duration="48/1s">
+                            <audio offset="0s" ref="r4" duration="48/1s" lane="-1"/>
+                        </gap>
+                    </clip>
+                    <clip name="dx_stem" offset="0s" duration="10/1s" lane="-2">
+                        <gap name="Gap" offset="0s" duration="40/1s">
+                            <audio offset="0s" ref="r5" duration="40/1s" lane="-2"/>
+                        </gap>
+                    </clip>
+                </clip>
+                <clip name="SHOT_0010" offset="2s" duration="10/1s">
+                    <video offset="0s" ref="r3" duration="40/1s"/>
+                </clip>
+            </spine>
+        </sequence>
+    </project>
+</fcpxml>

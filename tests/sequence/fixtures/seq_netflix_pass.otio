@@ -1,0 +1,357 @@
+{
+    "OTIO_SCHEMA": "Timeline.1",
+    "metadata": {},
+    "name": "Seq Netflix Pass",
+    "global_start_time": {
+        "OTIO_SCHEMA": "RationalTime.1",
+        "rate": 24.0,
+        "value": 0.0
+    },
+    "tracks": {
+        "OTIO_SCHEMA": "Stack.1",
+        "metadata": {},
+        "name": "tracks",
+        "source_range": null,
+        "effects": [],
+        "markers": [],
+        "enabled": true,
+        "color": null,
+        "children": [
+            {
+                "OTIO_SCHEMA": "Track.1",
+                "metadata": {},
+                "name": "V1",
+                "source_range": null,
+                "effects": [],
+                "markers": [],
+                "enabled": true,
+                "color": null,
+                "children": [
+                    {
+                        "OTIO_SCHEMA": "Clip.2",
+                        "metadata": {},
+                        "name": "SLATE",
+                        "source_range": {
+                            "OTIO_SCHEMA": "TimeRange.1",
+                            "duration": {
+                                "OTIO_SCHEMA": "RationalTime.1",
+                                "rate": 24.0,
+                                "value": 120.0
+                            },
+                            "start_time": {
+                                "OTIO_SCHEMA": "RationalTime.1",
+                                "rate": 24.0,
+                                "value": 0.0
+                            }
+                        },
+                        "effects": [],
+                        "markers": [],
+                        "enabled": true,
+                        "color": null,
+                        "media_references": {
+                            "DEFAULT_MEDIA": {
+                                "OTIO_SCHEMA": "ExternalReference.1",
+                                "metadata": {},
+                                "name": "",
+                                "available_range": {
+                                    "OTIO_SCHEMA": "TimeRange.1",
+                                    "duration": {
+                                        "OTIO_SCHEMA": "RationalTime.1",
+                                        "rate": 24.0,
+                                        "value": 480.0
+                                    },
+                                    "start_time": {
+                                        "OTIO_SCHEMA": "RationalTime.1",
+                                        "rate": 24.0,
+                                        "value": 0.0
+                                    }
+                                },
+                                "available_image_bounds": null,
+                                "target_url": "file:///media/SLATE.mov"
+                            }
+                        },
+                        "active_media_reference_key": "DEFAULT_MEDIA"
+                    },
+                    {
+                        "OTIO_SCHEMA": "Clip.2",
+                        "metadata": {},
+                        "name": "SHOT_0010",
+                        "source_range": {
+                            "OTIO_SCHEMA": "TimeRange.1",
+                            "duration": {
+                                "OTIO_SCHEMA": "RationalTime.1",
+                                "rate": 24.0,
+                                "value": 240.0
+                            },
+                            "start_time": {
+                                "OTIO_SCHEMA": "RationalTime.1",
+                                "rate": 24.0,
+                                "value": 0.0
+                            }
+                        },
+                        "effects": [],
+                        "markers": [],
+                        "enabled": true,
+                        "color": null,
+                        "media_references": {
+                            "DEFAULT_MEDIA": {
+                                "OTIO_SCHEMA": "ExternalReference.1",
+                                "metadata": {},
+                                "name": "",
+                                "available_range": {
+                                    "OTIO_SCHEMA": "TimeRange.1",
+                                    "duration": {
+                                        "OTIO_SCHEMA": "RationalTime.1",
+                                        "rate": 24.0,
+                                        "value": 960.0
+                                    },
+                                    "start_time": {
+                                        "OTIO_SCHEMA": "RationalTime.1",
+                                        "rate": 24.0,
+                                        "value": 0.0
+                                    }
+                                },
+                                "available_image_bounds": null,
+                                "target_url": "file:///media/SHOT_0010.mov"
+                            }
+                        },
+                        "active_media_reference_key": "DEFAULT_MEDIA"
+                    }
+                ],
+                "kind": "Video"
+            },
+            {
+                "OTIO_SCHEMA": "Track.1",
+                "metadata": {},
+                "name": "DX",
+                "source_range": null,
+                "effects": [],
+                "markers": [],
+                "enabled": true,
+                "color": null,
+                "children": [
+                    {
+                        "OTIO_SCHEMA": "Clip.2",
+                        "metadata": {},
+                        "name": "dx_stem",
+                        "source_range": {
+                            "OTIO_SCHEMA": "TimeRange.1",
+                            "duration": {
+                                "OTIO_SCHEMA": "RationalTime.1",
+                                "rate": 24.0,
+                                "value": 360.0
+                            },
+                            "start_time": {
+                                "OTIO_SCHEMA": "RationalTime.1",
+                                "rate": 24.0,
+                                "value": 0.0
+                            }
+                        },
+                        "effects": [],
+                        "markers": [],
+                        "enabled": true,
+                        "color": null,
+                        "media_references": {
+                            "DEFAULT_MEDIA": {
+                                "OTIO_SCHEMA": "ExternalReference.1",
+                                "metadata": {},
+                                "name": "",
+                                "available_range": {
+                                    "OTIO_SCHEMA": "TimeRange.1",
+                                    "duration": {
+                                        "OTIO_SCHEMA": "RationalTime.1",
+                                        "rate": 24.0,
+                                        "value": 1440.0
+                                    },
+                                    "start_time": {
+                                        "OTIO_SCHEMA": "RationalTime.1",
+                                        "rate": 24.0,
+                                        "value": 0.0
+                                    }
+                                },
+                                "available_image_bounds": null,
+                                "target_url": "file:///media/dx_stem.mov"
+                            }
+                        },
+                        "active_media_reference_key": "DEFAULT_MEDIA"
+                    }
+                ],
+                "kind": "Audio"
+            },
+            {
+                "OTIO_SCHEMA": "Track.1",
+                "metadata": {},
+                "name": "MX music",
+                "source_range": null,
+                "effects": [],
+                "markers": [],
+                "enabled": true,
+                "color": null,
+                "children": [
+                    {
+                        "OTIO_SCHEMA": "Clip.2",
+                        "metadata": {},
+                        "name": "mx_stem",
+                        "source_range": {
+                            "OTIO_SCHEMA": "TimeRange.1",
+                            "duration": {
+                                "OTIO_SCHEMA": "RationalTime.1",
+                                "rate": 24.0,
+                                "value": 360.0
+                            },
+                            "start_time": {
+                                "OTIO_SCHEMA": "RationalTime.1",
+                                "rate": 24.0,
+                                "value": 0.0
+                            }
+                        },
+                        "effects": [],
+                        "markers": [],
+                        "enabled": true,
+                        "color": null,
+                        "media_references": {
+                            "DEFAULT_MEDIA": {
+                                "OTIO_SCHEMA": "ExternalReference.1",
+                                "metadata": {},
+                                "name": "",
+                                "available_range": {
+                                    "OTIO_SCHEMA": "TimeRange.1",
+                                    "duration": {
+                                        "OTIO_SCHEMA": "RationalTime.1",
+                                        "rate": 24.0,
+                                        "value": 1440.0
+                                    },
+                                    "start_time": {
+                                        "OTIO_SCHEMA": "RationalTime.1",
+                                        "rate": 24.0,
+                                        "value": 0.0
+                                    }
+                                },
+                                "available_image_bounds": null,
+                                "target_url": "file:///media/mx_stem.mov"
+                            }
+                        },
+                        "active_media_reference_key": "DEFAULT_MEDIA"
+                    }
+                ],
+                "kind": "Audio"
+            },
+            {
+                "OTIO_SCHEMA": "Track.1",
+                "metadata": {},
+                "name": "M&E",
+                "source_range": null,
+                "effects": [],
+                "markers": [],
+                "enabled": true,
+                "color": null,
+                "children": [
+                    {
+                        "OTIO_SCHEMA": "Clip.2",
+                        "metadata": {},
+                        "name": "me_stem",
+                        "source_range": {
+                            "OTIO_SCHEMA": "TimeRange.1",
+                            "duration": {
+                                "OTIO_SCHEMA": "RationalTime.1",
+                                "rate": 24.0,
+                                "value": 360.0
+                            },
+                            "start_time": {
+                                "OTIO_SCHEMA": "RationalTime.1",
+                                "rate": 24.0,
+                                "value": 0.0
+                            }
+                        },
+                        "effects": [],
+                        "markers": [],
+                        "enabled": true,
+                        "color": null,
+                        "media_references": {
+                            "DEFAULT_MEDIA": {
+                                "OTIO_SCHEMA": "ExternalReference.1",
+                                "metadata": {},
+                                "name": "",
+                                "available_range": {
+                                    "OTIO_SCHEMA": "TimeRange.1",
+                                    "duration": {
+                                        "OTIO_SCHEMA": "RationalTime.1",
+                                        "rate": 24.0,
+                                        "value": 1440.0
+                                    },
+                                    "start_time": {
+                                        "OTIO_SCHEMA": "RationalTime.1",
+                                        "rate": 24.0,
+                                        "value": 0.0
+                                    }
+                                },
+                                "available_image_bounds": null,
+                                "target_url": "file:///media/me_stem.mov"
+                            }
+                        },
+                        "active_media_reference_key": "DEFAULT_MEDIA"
+                    }
+                ],
+                "kind": "Audio"
+            },
+            {
+                "OTIO_SCHEMA": "Track.1",
+                "metadata": {},
+                "name": "REF scratch",
+                "source_range": null,
+                "effects": [],
+                "markers": [],
+                "enabled": false,
+                "color": null,
+                "children": [
+                    {
+                        "OTIO_SCHEMA": "Clip.2",
+                        "metadata": {},
+                        "name": "ref_scratch",
+                        "source_range": {
+                            "OTIO_SCHEMA": "TimeRange.1",
+                            "duration": {
+                                "OTIO_SCHEMA": "RationalTime.1",
+                                "rate": 24.0,
+                                "value": 360.0
+                            },
+                            "start_time": {
+                                "OTIO_SCHEMA": "RationalTime.1",
+                                "rate": 24.0,
+                                "value": 0.0
+                            }
+                        },
+                        "effects": [],
+                        "markers": [],
+                        "enabled": true,
+                        "color": null,
+                        "media_references": {
+                            "DEFAULT_MEDIA": {
+                                "OTIO_SCHEMA": "ExternalReference.1",
+                                "metadata": {},
+                                "name": "",
+                                "available_range": {
+                                    "OTIO_SCHEMA": "TimeRange.1",
+                                    "duration": {
+                                        "OTIO_SCHEMA": "RationalTime.1",
+                                        "rate": 24.0,
+                                        "value": 1440.0
+                                    },
+                                    "start_time": {
+                                        "OTIO_SCHEMA": "RationalTime.1",
+                                        "rate": 24.0,
+                                        "value": 0.0
+                                    }
+                                },
+                                "available_image_bounds": null,
+                                "target_url": "file:///media/ref_scratch.mov"
+                            }
+                        },
+                        "active_media_reference_key": "DEFAULT_MEDIA"
+                    }
+                ],
+                "kind": "Audio"
+            }
+        ]
+    }
+}

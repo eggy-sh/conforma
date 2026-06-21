@@ -1,0 +1,27 @@
+# Netflix-style IMF editorial-sequence delivery spec.
+#
+# Checks an *exported timeline* (FCPXML / AAF / OTIO), not a rendered file:
+# a single picture track headed by a 5-second slate, the reference/scratch
+# audio stem muted, and an IMF-style audio stem layout. Mirrors the shape of
+# the rendered-file presets under conforma/presets/, but for the sequence path.
+#
+# Every field is optional at the rule layer: a sequence missing the data a
+# field checks yields UNKNOWN, never a crash.
+name: "Netflix IMF Editorial"
+version: "1.0"
+description: >
+  Netflix-style IMF editorial-sequence conformance: a 5-second head slate on a
+  single picture track, reference/scratch audio muted, and a 4- or 8-stem audio
+  layout. Verdicts are deterministic; the reference role is matched on the usual
+  scratch/temp/2pop keywords plus any studio terms added here.
+sequence:
+  slate:
+    required: true
+    duration_seconds: 5
+    tolerance_seconds: 0.5
+  expected_video_tracks: 1
+  expected_audio_tracks: [4, 8]
+  reference_audio_must_be_muted: true
+  # Extend the deterministic reference-role keyword set with house terms; the
+  # built-in keywords (ref / scratch / temp / 2pop / pop / guide) always apply.
+  reference_role_keywords: ["wip", "mixdown ref"]

@@ -7,9 +7,12 @@ first, an LLM only to explain it.**
 (`ffprobe -print_format json` **or** MediaInfo JSON) and tells you, per
 requirement, whether the file is conformant — resolution, frame rate, video
 codec, bit depth, scan type, audio codec/channels/sample rate, and container.
-Every failure ships with a concrete `ffmpeg` fix command. It is one of three
-tools built on [replykit](https://github.com/eggy-sh/replykit), the shared
-agent I/O engine behind the Post-Production Agent Kit.
+Every failure ships with a concrete `ffmpeg` fix command. And with
+[`conforma sequence`](#sequence-conformance--judging-the-timeline-not-just-the-file)
+it does the same for an **exported editorial timeline** (FCPXML / AAF / OTIO):
+slate length, muted reference audio, and track layout. It is one of three tools
+built on [replykit](https://github.com/eggy-sh/replykit), the shared agent I/O
+engine behind the Post-Production Agent Kit.
 
 ```text
 $ conforma check master.mov --spec netflix-hd
@@ -168,6 +171,128 @@ isn't installed — `conforma` never silently guesses.
 
 Presets are **illustrative approximations**, not official studio documents.
 
+## Sequence conformance — judging the *timeline*, not just the file
+
+The `check` command above judges a single rendered **media file**. But a delivery
+fails QC just as often for *editorial* reasons the file probe can't see: the head
+slate is the wrong length, a scratch/temp reference audio stem was left live, or
+the track layout doesn't match the IMF/Netflix-style expectation. `conforma
+sequence` checks the **exported editorial timeline** — a Final Cut `.fcpxml`, an
+Avid `.aaf`, or a lossless OpenTimelineIO `.otio` — against a *sequence*-level
+delivery spec.
+
+```text
+$ conforma sequence Aurora_EP101_v3.otio --spec netflix-imf
+Netflix IMF Editorial v1.0
+Sequence: Aurora_EP101_v3.otio
+NON-CONFORMANT — 3 passed, 2 failed, 0 unknown
+  slate_present          PASS   Slate clip present at head of the picture track.
+  slate_duration         FAIL   Slate duration 2s is not within 0.5s of required 5s.
+  reference_audio_muted  FAIL   Reference audio track(s) still enabled: ['A4 REF 2pop scratch'].
+  video_track_count      PASS   Video track count 1 matches required 1.
+  audio_track_count      PASS   Audio track count 4 matches required 4/8.
+
+Fix hints:
+  slate_duration:         Trim or extend the slate clip to 5s (±0.5s).
+  reference_audio_muted:  Mute (disable) the reference track(s): ['A4 REF 2pop scratch'].
+```
+
+### Why this is differentiated for studios
+
+1. **The same deterministic-verdict discipline, on a harder substrate.** Slate
+   length, "is the reference stem muted", and track counts are computed by pure
+   functions in `conforma.sequence.rules` from a small, JSON-serializable
+   `SequenceLayout` — **no LLM, no NLE, no media**. The verdict is reproducible,
+   so it can gate a delivery; the optional model layer only narrates it or fills
+   a genuinely ambiguous role (see below).
+2. **One OTIO seam, many NLEs.** Only `conforma.sequence.otio_io` imports
+   `opentimelineio`; it reads FCPXML / AAF / OTIO into a single `Timeline` and
+   normalizes it (an FCPXML *library* that comes back as a collection is reduced
+   to its first timeline). Everything downstream speaks the dependency-free
+   layout, so the rules never care which NLE exported the cut.
+3. **Reference/scratch detection is literal first, fuzzy only at the boundary.**
+   Track roles (`reference` / `me` / `dialogue` / `music`) are inferred by an
+   explicit keyword set (`ref`, `scratch`, `temp`, `2pop`, `m&e`, `dx`, …) plus
+   any explicit FCPXML `audioRole`. The replykit model is invoked **only** for
+   audio tracks the keyword matcher left `unknown` (e.g. a bare `"Stem A"`), and
+   the deterministic match always wins — the model can fill a gap, never override
+   a fact.
+4. **A deterministic corrector, not a black box.** `--fix` writes a corrected
+   timeline: it sets the offending reference track's native `enabled = False`
+   (the OTIO mute) and annotates the over/under-length slate with a
+   `conforma_flag` note. It *flags*; it never fabricates frames. `otio_json`
+   output round-trips track names + enable flags losslessly; FCPXML output is
+   best-effort and documented as lossy for track names.
+5. **Same automation contract.** `--json` prints exactly one object, `--report`
+   writes diffable Markdown, and exit codes match `check` (`0`/`1`/`2`).
+
+### Quickstart
+
+```bash
+# Check an exported timeline against the shipped Netflix-IMF sequence preset.
+conforma sequence Aurora_EP101.otio --spec netflix-imf
+
+# FCPXML / AAF need the optional adapter plugins (otio_json always works):
+pip install 'conforma[adapters]'
+conforma sequence Aurora_EP101.fcpxml --spec netflix-imf
+
+# Machine-readable + a Markdown report + a corrected timeline, all at once.
+conforma sequence cut.otio --spec netflix-imf \
+  --json --report seq_report.md --fix cut_fixed.otio | jq '.conformant'
+
+# Author your own sequence spec; --spec also accepts a YAML path.
+conforma sequence cut.otio --spec ./house-imf.yaml
+```
+
+```python
+import conforma
+
+spec = conforma.load_seq_preset("netflix-imf")          # or load_delivery_spec("my.yaml")
+timeline = conforma.read_timeline("Aurora_EP101.otio")  # FCPXML / AAF / OTIO
+layout = conforma.extract_layout(timeline, source="Aurora_EP101.otio")
+
+report = conforma.SequenceConformanceAgent().check(spec, layout)  # deterministic
+print(report.conformant, report.counts())
+for r in report.failures:
+    print(r.key, "->", r.fix_hint)
+
+# Bonus: write a corrected timeline (mute the ref stem, flag the slate).
+conforma.fix_sequence(timeline, layout, report, "Aurora_EP101_fixed.otio")
+```
+
+### Sequence interop & formats
+
+| Input | Format | How |
+|-------|--------|-----|
+| Timeline (lossless) | OpenTimelineIO `.otio` | works out of the box (`otio_json` ships with OTIO) |
+| Timeline (Final Cut) | `.fcpxml` | needs `pip install 'conforma[adapters]'` |
+| Timeline (Avid) | `.aaf` | needs `pip install 'conforma[adapters]'` |
+| Spec | YAML (preset name or path) | `--spec netflix-imf` or `--spec ./my-imf.yaml` |
+
+A missing adapter is a clean usage error (exit `2`) with the exact install hint,
+never a cryptic stack trace. The shipped `netflix-imf` preset checks a 5-second
+head slate (±0.5 s), one picture track, a 4- or 8-stem audio layout, and that the
+reference stem is muted. A sequence spec is the same shape as a media spec — a
+`name`, a `version`, and a `sequence:` block:
+
+```yaml
+name: "House IMF"
+version: "1.0"
+sequence:
+  slate:
+    required: true
+    duration_seconds: 5
+    tolerance_seconds: 0.5
+  expected_video_tracks: 1
+  expected_audio_tracks: [4, 8]
+  reference_audio_must_be_muted: true
+  reference_role_keywords: ["wip"]   # optional: extend the keyword set
+```
+
+Runnable, fully offline: [`examples/check_sequence.py`](examples/check_sequence.py)
+drives both [`examples/seq_netflix_pass.otio`](examples/seq_netflix_pass.otio) and
+[`examples/seq_netflix_fail.otio`](examples/seq_netflix_fail.otio).
+
 ### Writing a spec
 
 A spec is a `name`, a `version`, and an ordered list of `requirements`. Every
@@ -211,9 +336,21 @@ ffprobe/MediaInfo ─► conforma.probe ──► MediaProfile ─┘           
                                                 report_to_dict / render_report / markdown
 ```
 
+The sequence path mirrors the same flow on a timeline instead of a probe:
+
+```
+seq.fcpxml ─► sequence.otio_io ─► Timeline ─► sequence.extract ─► SequenceLayout ─┐
+delivery.yaml ─► sequence.delivery_spec ─► DeliverySpec ──────────────────────────┤
+                                                          sequence.rules (det.) ──► SequenceReport
+                                                          sequence.fix (corrected .otio) ◄──┤
+                                                          sequence.agent (replykit) ◄───────┘ (optional)
+```
+
 The CLI (`conforma.cli`) is a thin Typer + Rich shell over the public API. It
 imports only the `conforma` package root — never private internals — so the
-library contract and the CLI contract are the same contract.
+library contract and the CLI contract are the same contract. The new `sequence`
+subcommand sits beside `check` / `presets` / `show` and honors the same
+`--json` / `--report` / exit-code contract.
 
 ## Development
 
@@ -224,9 +361,12 @@ uv run ruff format --check .
 uv run pytest --cov=conforma --cov-report=term-missing
 ```
 
-The suite is **hermetic** — no network, no live LLM, no real ffmpeg/ffprobe.
-Probe data comes from committed fixtures under `tests/fixtures/`; any model is a
-`replykit` `ScriptedModel`/`MockModel`. CI runs the same on Python 3.11 and 3.12
+The suite is **hermetic** — no network, no live LLM, no real ffmpeg/ffprobe, no
+NLE. Probe data comes from committed fixtures under `tests/fixtures/`; sequence
+timelines come from committed `.otio` (and one `.fcpxml`) fixtures under
+`tests/sequence/fixtures/` and `examples/`; any model is a `replykit`
+`ScriptedModel`/`MockModel`. The dev install pulls the optional OTIO adapters so
+the `.fcpxml` interop path is exercised. CI runs the same on Python 3.11 and 3.12
 (see [`.github/workflows/ci.yml`](.github/workflows/ci.yml)).
 
 ## License

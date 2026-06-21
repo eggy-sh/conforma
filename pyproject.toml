@@ -38,6 +38,9 @@ dependencies = [
     "typer>=0.12",
     "rich>=13.0",
     "pyyaml>=6.0",
+    # Sequence-level conformance: parse exported timelines (otio_json always;
+    # FCPXML/AAF via the optional adapter plugins below) into an OTIO Timeline.
+    "opentimelineio>=0.17,<1.0",
 ]
 
 [project.urls]
@@ -48,10 +51,20 @@ Repository = "https://github.com/eggy-sh/conforma"
 conforma = "conforma.cli:main"
 
 [project.optional-dependencies]
+# FCPXML and AAF are *not* bundled with opentimelineio; they ship as separate
+# adapter plugins. The core sequence path works with otio_json out of the box;
+# install this extra to read/write .fcpxml and .aaf exports.
+adapters = [
+    "otio-fcpx-xml-adapter>=1.0",
+    "otio-aaf-adapter>=2.0",
+]
 dev = [
     "pytest>=8.0",
     "pytest-cov>=5.0",
     "ruff>=0.6",
+    # The dev/test matrix installs the adapters so the .fcpxml interop test runs.
+    "otio-fcpx-xml-adapter>=1.0",
+    "otio-aaf-adapter>=2.0",
 ]
 
 [tool.hatch.build.targets.wheel]

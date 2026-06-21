@@ -1,9 +1,11 @@
 name: CI
 
 # Lint + hermetic test suite for conforma. Everything here is offline: the suite
-# never touches ffmpeg, ffprobe, a real LLM, or the network (replykit's MockModel
-# / ScriptedModel stand in for any model). The only network access is dependency
-# installation.
+# never touches ffmpeg, ffprobe, an NLE, a real LLM, or the network (replykit's
+# MockModel / ScriptedModel stand in for any model; committed *.json probes and
+# *.otio/*.fcpxml timelines stand in for any media). The only network access is
+# dependency installation. The dev extra pulls the optional OpenTimelineIO
+# FCPXML/AAF adapters so the sequence-conformance .fcpxml interop path is covered.
 
 on:
   push:
@@ -69,3 +71,14 @@ jobs:
 
       - name: Pytest with coverage
         run: uv run pytest --cov=conforma --cov-report=term-missing
+
+      # A fast end-to-end smoke check of the sequence subcommand on the shipped
+      # example timelines: the conforming cut exits 0, the non-conforming cut
+      # exits 1 — the same stable contract a delivery gate relies on.
+      - name: Sequence CLI smoke (exit-code contract)
+        run: |
+          uv run conforma sequence examples/seq_netflix_pass.otio --spec netflix-imf --json
+          if uv run conforma sequence examples/seq_netflix_fail.otio --spec netflix-imf --json; then
+            echo "::error::expected the non-conforming sequence to exit 1"
+            exit 1
+          fi

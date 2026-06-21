@@ -133,6 +133,24 @@ def _resolve_profile(media: str) -> conforma.MediaProfile:
     )
 
 
+def _resolve_seq_spec(spec: str) -> conforma.DeliverySpec:
+    """Resolve a ``--spec`` value into a validated :class:`conforma.DeliverySpec`.
+
+    A bare preset name (``netflix-imf``) loads the shipped sequence preset;
+    anything that looks like a path loads and validates that YAML file. Preset
+    names take precedence so ``--spec netflix-imf`` works without a file. Raises
+    :class:`conforma.SequenceSpecError` on an unknown preset / bad file.
+    """
+    if spec in conforma.SEQ_PRESETS:
+        return conforma.load_seq_preset(spec)
+    if os.path.isfile(spec):
+        return conforma.load_delivery_spec(spec)
+    raise conforma.SequenceSpecError(
+        f"unknown sequence spec {spec!r}: not a shipped preset "
+        f"({', '.join(conforma.list_seq_presets())}) and not a readable file"
+    )
+
+
 # ---------------------------------------------------------------------------
 # Commands
 # ---------------------------------------------------------------------------
@@ -193,6 +211,80 @@ def check(
         console.print(conforma.render_report(conformance))
 
     raise typer.Exit(EXIT_OK if conformance.conformant else EXIT_NONCONFORMANT)
+
+
+@app.command()
+def sequence(
+    seq: str = typer.Argument(
+        ...,
+        help="Path to an exported timeline: .otio (always), or .fcpxml/.aaf "
+        "(needs the optional adapters: pip install conforma[adapters]).",
+    ),
+    spec: str = typer.Option(
+        ...,
+        "--spec",
+        "-s",
+        help="Sequence preset name (e.g. 'netflix-imf') or path to a delivery-spec YAML.",
+    ),
+    json_out: bool = typer.Option(
+        False, "--json", help="Print exactly one JSON object to stdout and nothing else."
+    ),
+    report: str | None = typer.Option(
+        None, "--report", help="Write a Markdown sequence-conformance report to this path."
+    ),
+    fix: str | None = typer.Option(
+        None,
+        "--fix",
+        help="Write a deterministically corrected timeline (mute reference audio, "
+        "flag the slate) to this path. Suffix selects the adapter.",
+    ),
+) -> None:
+    """Check an exported editorial timeline against a sequence delivery spec.
+
+    Resolves the spec (preset name or YAML path), reads the timeline via the OTIO
+    adapter for its suffix (clean exit 2 with an install hint when an FCPXML/AAF
+    plugin is missing), extracts the deterministic layout, runs the deterministic
+    sequence verdict, optionally writes a ``--report`` Markdown and a ``--fix``
+    corrected timeline, and emits the report. Exit code is ``0`` when conformant,
+    ``1`` when not, ``2`` on a usage/IO error — the same contract as ``check``.
+    """
+    try:
+        resolved_spec = _resolve_seq_spec(spec)
+        timeline = conforma.read_timeline(seq)
+    except conforma.ConformaError as exc:
+        _fail(str(exc), as_json=json_out)
+        return  # unreachable: _fail raises
+
+    layout = conforma.extract_layout(timeline, source=seq)
+    # No model -> the hermetic, deterministic report (verdicts never come from an LLM).
+    agent = conforma.SequenceConformanceAgent()
+    seq_report = agent.check(resolved_spec, layout)
+
+    if report is not None:
+        try:
+            markdown = conforma.render_sequence_report_markdown(seq_report)
+            with open(report, "w", encoding="utf-8") as fh:
+                fh.write(markdown)
+        except OSError as exc:
+            _fail(f"could not write report to {report!r}: {exc}", as_json=json_out)
+            return
+
+    if fix is not None:
+        try:
+            conforma.fix_sequence(timeline, layout, seq_report, fix)
+        except conforma.ConformaError as exc:
+            _fail(str(exc), as_json=json_out)
+            return
+        except OSError as exc:
+            _fail(f"could not write fixed timeline to {fix!r}: {exc}", as_json=json_out)
+            return
+
+    if json_out:
+        _emit_json(conforma.sequence_report_to_dict(seq_report))
+    else:
+        console.print(conforma.render_sequence_report(seq_report))
+
+    raise typer.Exit(EXIT_OK if seq_report.conformant else EXIT_NONCONFORMANT)
 
 
 @app.command()
