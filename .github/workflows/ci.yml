@@ -56,21 +56,21 @@ jobs:
           uv pip install -e '.[dev]'
 
       - name: Ruff lint
-        run: uv run ruff check .
+        run: .venv/bin/ruff check .
 
       - name: Ruff format check
-        run: uv run ruff format --check .
+        run: .venv/bin/ruff format --check .
 
       - name: Pytest with coverage
-        run: uv run pytest --cov=conforma --cov-report=term-missing
+        run: .venv/bin/pytest --cov=conforma --cov-report=term-missing
 
       # A fast end-to-end smoke check of the sequence subcommand on the shipped
       # example timelines: the conforming cut exits 0, the non-conforming cut
       # exits 1 — the same stable contract a delivery gate relies on.
       - name: Sequence CLI smoke (exit-code contract)
         run: |
-          uv run conforma sequence examples/seq_netflix_pass.otio --spec netflix-imf --json
-          if uv run conforma sequence examples/seq_netflix_fail.otio --spec netflix-imf --json; then
+          .venv/bin/conforma sequence examples/seq_netflix_pass.otio --spec netflix-imf --json
+          if .venv/bin/conforma sequence examples/seq_netflix_fail.otio --spec netflix-imf --json; then
             echo "::error::expected the non-conforming sequence to exit 1"
             exit 1
           fi
